@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartIrrigation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="screen active">
+        <div class="splash-content">
+            <img src="images/logo.png" alt="SmartIrrigation Logo" class="logo">
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p>SmartIrrigation</p>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen">
+        <div class="welcome-carousel">
+            <div class="carousel-container">
+                <div class="carousel-slide">
+                    <div class="welcome-slide" style="background-image: url('images/welcome.jpg');">
+                        <div class="welcome-content">
+                            <h1>Bienvenue sur SmartIrrigation</h1>
+                            <p>L'application intelligente pour optimiser l'irrigation de vos cultures</p>
+                        </div>
+                    </div>
+                    <div class="welcome-slide" style="background-image: url('images/welcome.webp');">
+                        <div class="welcome-content">
+                            <h1>Irrigation Intelligente</h1>
+                            <p>Optimisez vos ressources en eau grâce à nos conseils personnalisés</p>
+                        </div>
+                    </div>
+                    <div class="welcome-slide" style="background-image: url('images/welcome (2).webp');">
+                        <div class="welcome-content">
+                            <h1>IA au service de l'agriculture</h1>
+                            <p>Des recommandations précises basées sur le type de sol et la météo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-indicators">
+                <span class="indicator active" data-index="0"></span>
+                <span class="indicator" data-index="1"></span>
+                <span class="indicator" data-index="2"></span>
+            </div>
+            <button id="start-btn" class="btn primary-btn">Commencer</button>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+        <div class="auth-background" style="background-image: url('images/signup.jpg.webp');">
+            <div class="auth-form">
+                <h2>Connexion</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Mot de passe" required>
+                    </div>
+                    <button type="submit" class="btn primary-btn">Se connecter</button>
+                    <div class="form-footer">
+                        <a href="#" id="forgot-password">Mot de passe oublié?</a>
+                        <a href="#" id="go-to-signup">Créer un compte</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Screen -->
+    <div id="signup-screen" class="screen">
+        <div class="auth-background" style="background-image: url('images/signup.jpg.webp');">
+            <div class="auth-form">
+                <h2>Inscription</h2>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signup-name" placeholder="Nom d'utilisateur" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signup-email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signup-password" placeholder="Mot de passe" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signup-confirm" placeholder="Confirmer le mot de passe" required>
+                    </div>
+                    <button type="submit" class="btn primary-btn">S'inscrire</button>
+                    <div class="form-footer">
+                        <a href="#" id="go-to-login">Déjà un compte? Se connecter</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initial Configuration Screen -->
+    <div id="config-screen" class="screen">
+        <div class="auth-background" style="background-image: url('images/signup.jpg.webp');">
+            <div class="config-form">
+                <h2>Configuration Initiale</h2>
+                <div class="config-step active" id="config-step-1">
+                    <h3>Choisissez votre langue</h3>
+                    <div class="language-options">
+                        <div class="language-option selected">
+                            <span>Français</span>
+                        </div>
+                        <div class="language-option">
+                            <span>Fon</span>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn next-btn">Suivant</button>
+                </div>
+                <div class="config-step" id="config-step-2">
+                    <h3>Votre localisation</h3>
+                    <div class="map-container">
+                        <img src="images/map-benin.png" alt="Carte du Bénin" class="benin-map">
+                        <div class="location-marker" id="location-marker"></div>
+                    </div>
+                    <p class="location-text">Sélectionnez votre région sur la carte</p>
+                    <button class="btn secondary-btn back-btn">Retour</button>
+                    <button class="btn primary-btn next-btn">Suivant</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crop Configuration Screen -->
+    <div id="crop-config-screen" class="screen">
+        <div class="auth-background" style="background-image: url('images/signup.jpg.webp');">
+            <div class="crop-config-form">
+                <h2>Configuration des Cultures</h2>
+                <p>Sélectionnez vos cultures et configurez leurs détails</p>
+                
+                <div class="crop-selection">
+                    <div class="crop-option" data-crop="tomate">
+                        <img src="images/culture_tomate.jpg.png" alt="Tomate">
+                        <span>Tomate</span>
+                    </div>
+                    <div class="crop-option" data-crop="laitue">
+                        <img src="images/lettuce.png" alt="Laitue">
+                        <span>Laitue</span>
+                    </div>
+                    <div class="crop-option" data-crop="mais">
+                        <img src="images/corn.png" alt="Maïs">
+                        <span>Maïs</span>
+                    </div>
+                </div>
+
+                <div class="crop-details" id="crop-details-form">
+                    <h3>Détails de la culture</h3>
+                    <div class="no-crop-selected">
+                        <p>Sélectionnez une culture pour configurer ses détails</p>
+                    </div>
+                    <div class="crop-form hidden">
+                        <div class="form-group">
+                            <label for="soil-type">Type de sol</label>
+                            <select id="soil-type" required>
+                                <option value="">Sélectionnez un type de sol</option>
+                                <option value="argileux">Argileux</option>
+                                <option value="sableux">Sableux</option>
+                                <option value="limoneux">Limoneux</option>
+                                <option value="calcaire">Calcaire</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="area">Superficie (m²)</label>
+                            <input type="number" id="area" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="planting-date">Date de plantation</label>
+                            <input type="date" id="planting-date" required>
+                        </div>
+                        <button class="btn primary-btn save-crop-btn">Enregistrer cette culture</button>
+                    </div>
+                </div>
+
+                <div class="selected-crops">
+                    <h3>Cultures sélectionnées</h3>
+                    <ul id="selected-crops-list">
+                        <!-- Selected crops will be added here dynamically -->
+                    </ul>
+                </div>
+
+                <div class="form-buttons">
+                    <button class="btn secondary-btn" id="back-to-config">Retour</button>
+                    <button class="btn primary-btn" id="complete-setup">Terminer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboard-screen" class="screen">
+        <div class="dashboard-container" style="background-image: url('images/acceuille.webp');">
+            <header class="app-header">
+                <img src="images/logo.png" alt="SmartIrrigation Logo" class="header-logo">
+                <h1>SmartIrrigation</h1>
+                <button class="settings-btn" id="settings-access"><i class="fas fa-cog"></i></button>
+            </header>
+
+            <div class="weather-widget">
+                <div class="weather-info">
+                    <div class="weather-main">
+                        <i class="fas fa-sun"></i>
+                        <div class="weather-temp">28°C</div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <i class="fas fa-tint"></i>
+                            <span>65%</span>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-cloud-rain"></i>
+                            <span>10mm</span>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-sun"></i>
+                            <span>8h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="welcome-message">
+                    <h2>Bonjour, <span id="user-name">Utilisateur</span></h2>
+                    <p>Voici les recommandations pour vos cultures aujourd'hui</p>
+                </div>
+            </div>
+
+            <!-- Nouvelle carte de culture avec recommandations séparées -->
+            <div class="crop-info-card">
+                <div class="crop-header">
+                    <img src="images/culture_tomate.jpg.png" alt="Tomate" class="crop-icon">
+                    <div class="crop-title">
+                        <h3>Tomate</h3>
+                        <p>Sol argileux</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendations-title">
+                <h3>Recommandations du jour</h3>
+            </div>
+
+            <div class="recommendation-item-card">
+                <div class="recommendation-icon water-circle">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="recommendation-content">
+                    <div class="recommendation-label">Quantité d'eau</div>
+                    <div class="recommendation-value">4L/m²</div>
+                </div>
+            </div>
+
+            <div class="recommendation-item-card">
+                <div class="recommendation-icon frequency-circle">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="recommendation-content">
+                    <div class="recommendation-label">Fréquence d'irrigation</div>
+                    <div class="recommendation-value">Tous les 2 jours</div>
+                </div>
+            </div>
+
+            <div class="recommendation-item-card">
+                <div class="recommendation-icon time-circle">
+                    <i class="far fa-clock"></i>
+                </div>
+                <div class="recommendation-content">
+                    <div class="recommendation-label">Heure optimale</div>
+                    <div class="recommendation-value">17:00 - 18:00</div>
+                </div>
+            </div>
+
+            <div class="recommendation-item-card alert-card">
+                <div class="recommendation-icon alert-circle">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="recommendation-content">
+                    <div class="recommendation-label">Alerte météo</div>
+                    <div class="recommendation-value">Température élevée demain, arrosez en fin de journée</div>
+                </div>
+            </div>
+
+            <div class="action-button-container">
+                <button class="btn primary-btn irrigation-done-btn">Marquer comme arrosé</button>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="bottom-nav">
+                <a href="#dashboard" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+                <a href="#irrigation" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>Irrigation</span>
+                </a>
+                <a href="#ai-analysis" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>Conseils IA</span>
+                </a>
+                <a href="#profile" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Irrigation Details Screen -->
+    <div id="irrigation-screen" class="screen">
+        <div class="dashboard-container">
+            <header class="app-header">
+                <h1>Irrigation</h1>
+                <button class="settings-btn" id="irrigation-settings"><i class="fas fa-cog"></i></button>
+            </header>
+
+            <div class="irrigation-details">
+                <div class="detail-tabs">
+                    <div class="tab active" data-tab="needs">Besoins</div>
+                    <div class="tab" data-tab="history">Historique</div>
+                </div>
+
+                <div class="tab-content active" id="needs-tab">
+                    <div class="irrigation-crops">
+                        <div class="irrigation-crop-card">
+                            <div class="crop-header">
+                                <img src="images/culture_tomate.jpg.png" alt="Tomate" class="crop-icon">
+                                <h3>Tomate</h3>
+                            </div>
+                            <div class="crop-details">
+                                <div class="detail-row">
+                                    <span>Type de sol:</span>
+                                    <span>Argileux</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Superficie:</span>
+                                    <span>100m²</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Planté le:</span>
+                                    <span>15/03/2023</span>
+                                </div>
+                                <div class="detail-row water-need">
+                                    <span>Besoin en eau:</span>
+                                    <span>2.5L/m²</span>
+                                </div>
+                                <div class="detail-row best-time">
+                                    <span>Heure optimale:</span>
+                                    <span>17:00 - 18:00</span>
+                                </div>
+                            </div>
+                            <button class="btn primary-btn irrigation-done-btn">Marquer comme arrosé</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="history-tab">
+                    <div class="irrigation-history">
+                        <div class="calendar">
+                            <div class="calendar-header">
+                                <button class="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                <h3>Mai 2023</h3>
+                                <button class="next-month"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-day-header">Lu</div>
+                                <div class="calendar-day-header">Ma</div>
+                                <div class="calendar-day-header">Me</div>
+                                <div class="calendar-day-header">Je</div>
+                                <div class="calendar-day-header">Ve</div>
+                                <div class="calendar-day-header">Sa</div>
+                                <div class="calendar-day-header">Di</div>
+                                <!-- Days will be added dynamically -->
+                            </div>
+                        </div>
+                        <div class="irrigation-logs">
+                            <h3>Historique d'irrigation</h3>
+                            <div class="log-entry">
+                                <div class="log-date">15/05/2023</div>
+                                <div class="log-details">
+                                    <div class="log-crop">Tomate</div>
+                                    <div class="log-water">2.5L/m²</div>
+                                </div>
+                                <div class="log-status completed"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-date">14/05/2023</div>
+                                <div class="log-details">
+                                    <div class="log-crop">Tomate</div>
+                                    <div class="log-water">2.5L/m²</div>
+                                </div>
+                                <div class="log-status completed"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-date">13/05/2023</div>
+                                <div class="log-details">
+                                    <div class="log-crop">Tomate</div>
+                                    <div class="log-water">2.5L/m²</div>
+                                </div>
+                                <div class="log-status missed"><i class="fas fa-times-circle"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="bottom-nav">
+                <a href="#dashboard" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+                <a href="#irrigation" class="nav-item active">
+                    <i class="fas fa-tint"></i>
+                    <span>Irrigation</span>
+                </a>
+                <a href="#ai-analysis" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>Conseils IA</span>
+                </a>
+                <a href="#profile" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- AI Analysis Screen -->
+    <div id="ai-analysis-screen" class="screen">
+        <div class="dashboard-container">
+            <header class="app-header">
+                <h1>Conseils IA</h1>
+                <button class="settings-btn" id="ai-settings"><i class="fas fa-cog"></i></button>
+            </header>
+
+            <div class="ai-content">
+                <div class="ai-graph">
+                    <h3>Prévisions d'irrigation sur 7 jours</h3>
+                    <canvas id="irrigation-chart"></canvas>
+                </div>
+
+                <div class="ai-recommendations">
+                    <h3>Recommandations</h3>
+                    <div class="ai-recommendation-card">
+                        <div class="card-icon"><i class="fas fa-sun"></i></div>
+                        <div class="card-content">
+                            <h4>Température élevée prévue</h4>
+                            <p>Arrosez vos tomates en fin de journée pour éviter l'évaporation excessive.</p>
+                        </div>
+                    </div>
+                    <div class="ai-recommendation-card">
+                        <div class="card-icon"><i class="fas fa-cloud-rain"></i></div>
+                        <div class="card-content">
+                            <h4>Précipitations prévues</h4>
+                            <p>Réduisez l'irrigation des laitues le 18/05 en raison des pluies prévues.</p>
+                        </div>
+                    </div>
+                    <div class="ai-recommendation-card">
+                        <div class="card-icon"><i class="fas fa-seedling"></i></div>
+                        <div class="card-content">
+                            <h4>Stade de croissance</h4>
+                            <p>Vos plants de maïs sont en phase de croissance rapide, augmentez l'apport en eau de 15%.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="bottom-nav">
+                <a href="#dashboard" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+                <a href="#irrigation" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>Irrigation</span>
+                </a>
+                <a href="#ai-analysis" class="nav-item active">
+                    <i class="fas fa-robot"></i>
+                    <span>Conseils IA</span>
+                </a>
+                <a href="#profile" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profile-screen" class="screen">
+        <div class="dashboard-container">
+            <header class="app-header">
+                <h1>Profil</h1>
+                <button class="settings-btn" id="profile-settings"><i class="fas fa-cog"></i></button>
+            </header>
+
+            <div class="profile-content">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 id="profile-name">Nom d'utilisateur</h2>
+                    <p id="profile-email">utilisateur@example.com</p>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Cultures</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Irrigations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">Efficacité</div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn secondary-btn"><i class="fas fa-edit"></i> Modifier le profil</button>
+                    <button class="btn primary-btn"><i class="fas fa-cog"></i> Paramètres</button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="bottom-nav">
+                <a href="#dashboard" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+                <a href="#irrigation" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>Irrigation</span>
+                </a>
+                <a href="#ai-analysis" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>Conseils IA</span>
+                </a>
+                <a href="#profile" class="nav-item active">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen">
+        <div class="dashboard-container">
+            <header class="app-header">
+                <button class="back-btn" id="settings-back"><i class="fas fa-arrow-left"></i></button>
+                <h1>Paramètres</h1>
+            </header>
+
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h3>Profil</h3>
+                    <div class="settings-option">
+                        <span>Nom d'utilisateur</span>
+                        <span class="setting-value">Utilisateur</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option">
+                        <span>Email</span>
+                        <span class="setting-value">utilisateur@example.com</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option">
+                        <span>Mot de passe</span>
+                        <span class="setting-value">••••••••</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Cultures</h3>
+                    <div class="settings-option">
+                        <span>Gérer les cultures</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Notifications</h3>
+                    <div class="settings-option toggle">
+                        <span>Alertes d'irrigation</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="settings-option toggle">
+                        <span>Alertes météo</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="settings-option toggle">
+                        <span>Conseils IA</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Préférences</h3>
+                    <div class="settings-option">
+                        <span>Langue</span>
+                        <span class="setting-value">Français</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option toggle">
+                        <span>Mode hors ligne</span>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Support</h3>
+                    <div class="settings-option">
+                        <span>Aide et FAQ</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-option">
+                        <span>Contacter le support</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <button class="btn danger-btn logout-btn">Déconnexion</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Notification -->
+    <div id="notification" class="notification">
+        <div class="notification-icon">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="notification-content">
+            <h4 class="notification-title">Titre de la notification</h4>
+            <p class="notification-message">Message de la notification</p>
+        </div>
+        <button class="notification-close"><i class="fas fa-times"></i></button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

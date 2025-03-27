@@ -1,0 +1,44 @@
+@startuml
+class Utilisateur {
+  +id: int
+  +nom: String
+  +email: String
+  +motDePasse: String
+  +sInscrire(): void
+  +seConnecter(): void
+}
+
+class Culture {
+  +id: int
+  +nom: String
+  +typeSol: String
+  +superficie: float
+  +datePlantation: Date
+  +besoinEau(): float
+}
+
+class Meteo {
+  +temperature: float
+  +humidite: float
+  +precipitations: float
+  +ensoleillement: float
+  +obtenirPrevisions(): void
+}
+
+class SystemeIrrigation {
+  +id: int
+  +quantiteEau: float
+  +heureOptimale: Time
+  +declencherIrrigation(): void
+}
+
+class IA_Conseils {
+  +analyserBesoins(): void
+  +fournirRecommandations(): String
+}
+
+Utilisateur "1" -- "*" Culture
+Culture "1" -- "1" Meteo
+Culture "1" -- "1" SystemeIrrigation
+SystemeIrrigation "1" -- "*" IA_Conseils
+@enduml

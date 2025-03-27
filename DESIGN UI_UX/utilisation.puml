@@ -1,0 +1,21 @@
+@startuml
+actor Agriculteur
+
+rectangle "SmartIrrigation" {
+  usecase "S'inscrire" as S1
+  usecase "Se connecter" as S2
+  usecase "Configurer ses cultures" as C1
+  usecase "Consulter la météo" as M1
+  usecase "Recevoir recommandations d'irrigation" as R1
+  usecase "Lancer l'irrigation" as I1
+  usecase "Recevoir conseils IA" as IA1
+}
+
+Agriculteur -> S1
+Agriculteur -> S2
+Agriculteur -> C1
+Agriculteur -> M1
+Agriculteur -> R1
+Agriculteur -> I1
+Agriculteur -> IA1
+@enduml
