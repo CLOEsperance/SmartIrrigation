@@ -1,130 +1,226 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
+  ImageBackground,
   ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
   Image,
   Dimensions,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { router } from 'expo-router';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
 import Colors from '../../constants/Colors';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  const [userName] = useState('Utilisateur'); // À remplacer par le vrai nom de l'utilisateur
+  const [cultures] = useState([
+    {
+      id: '1',
+      name: 'Tomate',
+      image: require('../../assets/images/culture_tomate.jpg.png'),
+      waterNeeded: '4L/m²',
+      status: 'Besoin d\'eau',
+      nextWatering: '17:00 - 18:00',
+    },
+    {
+      id: '2',
+      name: 'Laitue',
+      image: require('../../assets/images/lettuce.png'),
+      waterNeeded: '2.5L/m²',
+      status: 'Humidité optimale',
+      nextWatering: '06:00 - 07:00 (demain)',
+    },
+    {
+      id: '3',
+      name: 'Maïs',
+      image: require('../../assets/images/corn.png'),
+      waterNeeded: '3L/m²',
+      status: 'Besoin d\'eau',
+      nextWatering: '16:00 - 17:00',
+    },
+  ]);
+
+  const weatherData = {
+    temperature: 28,
+    humidity: 65,
+    rain: 10,
+    sunshine: 8,
+  };
+
+  const handleIrrigationDone = (id: string) => {
+    // Logique pour marquer l'irrigation comme effectuée
+    console.log('Irrigation effectuée pour la culture:', id);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <ImageBackground
+      source={require('../../assets/images/acceuille.webp')}
+      style={styles.backgroundImage}
+    >
       <StatusBar style="light" />
-      <ScrollView style={styles.scrollView}>
-        {/* En-tête */}
+      <SafeAreaView style={styles.container}>
+        {/* Header */}
         <View style={styles.header}>
           <Image 
             source={require('../../assets/images/logo.png')}
             style={styles.logo}
-            resizeMode="contain"
           />
           <Text style={styles.headerTitle}>SmartIrrigation</Text>
-          <TouchableOpacity style={styles.settingsButton}>
+          <TouchableOpacity 
+            style={styles.settingsButton}
+            onPress={() => router.push('/(auth)/settings')}
+          >
             <Ionicons name="settings-outline" size={24} color={Colors.white} />
           </TouchableOpacity>
         </View>
 
-        {/* Widget Météo */}
-        <View style={styles.weatherCard}>
-          <View style={styles.weatherMain}>
-            <Ionicons name="sunny" size={40} color={Colors.primary} />
-            <Text style={styles.temperature}>28°C</Text>
+        <ScrollView style={styles.scrollView}>
+          {/* Message de bienvenue */}
+          <View style={styles.welcomeSection}>
+            <Text style={styles.welcomeText}>
+              Bonjour, {userName}
+            </Text>
+            <Text style={styles.subText}>
+              Voici les recommandations pour vos cultures aujourd'hui
+            </Text>
           </View>
-          <View style={styles.weatherDetails}>
-            <View style={styles.weatherDetail}>
-              <Ionicons name="water" size={20} color={Colors.primary} />
-              <Text style={styles.weatherText}>65%</Text>
-            </View>
-            <View style={styles.weatherDetail}>
-              <Ionicons name="rainy" size={20} color={Colors.primary} />
-              <Text style={styles.weatherText}>10mm</Text>
-            </View>
-            <View style={styles.weatherDetail}>
-              <Ionicons name="sunny" size={20} color={Colors.primary} />
-              <Text style={styles.weatherText}>8h</Text>
-            </View>
-          </View>
-        </View>
 
-        {/* Message de bienvenue */}
-        <View style={styles.welcomeCard}>
-          <Text style={styles.welcomeTitle}>Bonjour, Utilisateur</Text>
-          <Text style={styles.welcomeSubtitle}>
-            Voici les recommandations pour vos cultures aujourd'hui
-          </Text>
-        </View>
-
-        {/* Carte de culture */}
-        <View style={styles.cropCard}>
-          <View style={styles.cropHeader}>
-            <Image 
-              source={require('../../assets/images/culture_tomate.jpg.png')}
-              style={styles.cropIcon}
-              resizeMode="contain"
-            />
-            <View style={styles.cropTitleContainer}>
-              <Text style={styles.cropTitle}>Tomate</Text>
-              <Text style={styles.cropSubtitle}>Plantée le 15/03/2024</Text>
+          {/* Alerte Météo */}
+          <View style={styles.alertContainer}>
+            <View style={styles.alertContent}>
+              <Ionicons name="warning" size={24} color="#FFA000" />
+              <Text style={styles.alertText}>
+                Température élevée demain, arrosez en fin de journée
+              </Text>
             </View>
           </View>
 
-          <View style={styles.recommendationsContainer}>
-            <View style={styles.recommendationItem}>
-              <Ionicons name="water" size={24} color={Colors.primary} />
-              <View style={styles.recommendationText}>
-                <Text style={styles.recommendationTitle}>Irrigation</Text>
-                <Text style={styles.recommendationValue}>2.5L</Text>
+          {/* Section Météo */}
+          <View style={styles.weatherContainer}>
+            <View style={styles.weatherHeader}>
+              <Ionicons name="partly-sunny" size={24} color={Colors.white} />
+              <Text style={styles.weatherTitle}>Météo du jour</Text>
+            </View>
+            <View style={styles.weatherGrid}>
+              <View style={styles.weatherItem}>
+                <FontAwesome5 name="temperature-high" size={20} color={Colors.white} />
+                <Text style={styles.weatherValue}>{weatherData.temperature}°C</Text>
+                <Text style={styles.weatherLabel}>Température</Text>
               </View>
-            </View>
-            <View style={styles.recommendationItem}>
-              <Ionicons name="time" size={24} color={Colors.primary} />
-              <View style={styles.recommendationText}>
-                <Text style={styles.recommendationTitle}>Prochaine irrigation</Text>
-                <Text style={styles.recommendationValue}>Dans 2h</Text>
+              <View style={styles.weatherItem}>
+                <Ionicons name="water" size={20} color={Colors.white} />
+                <Text style={styles.weatherValue}>{weatherData.humidity}%</Text>
+                <Text style={styles.weatherLabel}>Humidité</Text>
+              </View>
+              <View style={styles.weatherItem}>
+                <Ionicons name="rainy" size={20} color={Colors.white} />
+                <Text style={styles.weatherValue}>{weatherData.rain}mm</Text>
+                <Text style={styles.weatherLabel}>Précipitations</Text>
+              </View>
+              <View style={styles.weatherItem}>
+                <Ionicons name="sunny" size={20} color={Colors.white} />
+                <Text style={styles.weatherValue}>{weatherData.sunshine}h</Text>
+                <Text style={styles.weatherLabel}>Ensoleillement</Text>
               </View>
             </View>
           </View>
 
+          {/* Liste des cultures */}
+          <View style={styles.culturesContainer}>
+            <Text style={styles.sectionTitle}>Vos Cultures</Text>
+            {cultures.map((culture) => (
+              <View key={culture.id} style={styles.cultureCard}>
+                <Image source={culture.image} style={styles.cultureImage} />
+                <View style={styles.cultureInfo}>
+                  <Text style={styles.cultureName}>{culture.name}</Text>
+                  <View style={styles.cultureDetails}>
+                    <View style={styles.detailItem}>
+                      <Ionicons name="water" size={16} color={Colors.primary} />
+                      <Text style={styles.detailText}>{culture.waterNeeded}</Text>
+                    </View>
+                    <View style={styles.detailItem}>
+                      <Ionicons name="time" size={16} color={Colors.primary} />
+                      <Text style={styles.detailText}>{culture.nextWatering}</Text>
+                    </View>
+                    <View style={[styles.statusBadge, 
+                      culture.status === 'Humidité optimale' ? styles.statusOptimal : styles.statusNeedsWater
+                    ]}>
+                      <Text style={styles.statusText}>{culture.status}</Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.irrigationButton}
+                    onPress={() => handleIrrigationDone(culture.id)}
+                  >
+                    <Text style={styles.irrigationButtonText}>Marquer comme arrosé</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+
+        {/* Navigation Bar */}
+        <View style={styles.navbar}>
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="home" size={24} color={Colors.primary} />
+            <Text style={[styles.navText, styles.activeNavText]}>Accueil</Text>
+          </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.irrigationButton}
+            style={styles.navItem}
             onPress={() => router.push('/(auth)/irrigation')}
           >
-            <Text style={styles.irrigationButtonText}>Démarrer l'irrigation</Text>
+            <Ionicons name="water" size={24} color={Colors.darkGray} />
+            <Text style={styles.navText}>Irrigation</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.navItem}
+            onPress={() => router.push('/(auth)/conseils-ia')}
+          >
+            <Ionicons name="analytics" size={24} color={Colors.darkGray} />
+            <Text style={styles.navText}>Conseils IA</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.navItem}
+            onPress={() => router.push('/(auth)/profile')}
+          >
+            <Ionicons name="person" size={24} color={Colors.darkGray} />
+            <Text style={styles.navText}>Profil</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
-  },
-  scrollView: {
-    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     backgroundColor: Colors.primary,
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
+    resizeMode: 'contain',
   },
   headerTitle: {
     fontSize: 20,
@@ -134,138 +230,205 @@ const styles = StyleSheet.create({
   settingsButton: {
     padding: 8,
   },
-  weatherCard: {
-    backgroundColor: Colors.white,
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
+  scrollView: {
+    flex: 1,
+  },
+  welcomeSection: {
+    padding: 20,
+    marginTop: 20,
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontFamily: 'Montserrat-Bold',
+    color: Colors.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  subText: {
+    fontSize: 16,
+    fontFamily: 'OpenSans-Regular',
+    color: Colors.white,
+    marginTop: 5,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  alertContainer: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    backgroundColor: 'rgba(255, 248, 225, 0.95)',
+    borderRadius: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFA000',
+  },
+  alertContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+  },
+  alertText: {
+    marginLeft: 10,
+    fontSize: 14,
+    fontFamily: 'OpenSans-Regular',
+    color: '#5D4037',
+    flex: 1,
+  },
+  weatherContainer: {
+    margin: 20,
+    padding: 20,
+    borderRadius: 15,
+    backgroundColor: 'rgba(73, 151, 222, 0.9)',
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
-  weatherMain: {
+  weatherHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 15,
   },
-  temperature: {
-    fontSize: 32,
+  weatherTitle: {
+    fontSize: 20,
+    fontFamily: 'Montserrat-Bold',
+    color: Colors.white,
+    marginLeft: 10,
+  },
+  weatherGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  weatherItem: {
+    width: '48%',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    padding: 15,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  weatherValue: {
+    fontSize: 24,
+    fontFamily: 'Montserrat-Bold',
+    color: Colors.white,
+    marginVertical: 8,
+  },
+  weatherLabel: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Regular',
+    color: Colors.white,
+  },
+  culturesContainer: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontFamily: 'Montserrat-Bold',
+    color: Colors.white,
+    marginBottom: 15,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  cultureCard: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cultureImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginRight: 15,
+  },
+  cultureInfo: {
+    flex: 1,
+  },
+  cultureName: {
+    fontSize: 18,
     fontFamily: 'Montserrat-Bold',
     color: Colors.primary,
-    marginLeft: 12,
+    marginBottom: 5,
   },
-  weatherDetails: {
+  cultureDetails: {
+    marginBottom: 10,
+  },
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  detailText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Regular',
+    color: Colors.darkGray,
+    marginLeft: 5,
+  },
+  statusBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+    marginTop: 5,
+  },
+  statusOptimal: {
+    backgroundColor: '#4CAF50',
+  },
+  statusNeedsWater: {
+    backgroundColor: '#FFA000',
+  },
+  statusText: {
+    color: Colors.white,
+    fontSize: 12,
+    fontFamily: 'OpenSans-Bold',
+  },
+  irrigationButton: {
+    backgroundColor: Colors.primary,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  irrigationButtonText: {
+    color: Colors.white,
+    fontSize: 14,
+    fontFamily: 'Montserrat-Bold',
+  },
+  navbar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
-  weatherDetail: {
     alignItems: 'center',
+    backgroundColor: Colors.white,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: Colors.lightGray,
   },
-  weatherText: {
-    fontSize: 14,
+  navItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navText: {
+    fontSize: 12,
     fontFamily: 'OpenSans-Regular',
     color: Colors.darkGray,
     marginTop: 4,
   },
-  welcomeCard: {
-    backgroundColor: Colors.white,
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  welcomeTitle: {
-    fontSize: 24,
-    fontFamily: 'Montserrat-Bold',
-    color: Colors.primary,
-    marginBottom: 8,
-  },
-  welcomeSubtitle: {
-    fontSize: 16,
-    fontFamily: 'OpenSans-Regular',
-    color: Colors.darkGray,
-  },
-  cropCard: {
-    backgroundColor: Colors.white,
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cropHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  cropIcon: {
-    width: 60,
-    height: 60,
-    marginRight: 12,
-  },
-  cropTitleContainer: {
-    flex: 1,
-  },
-  cropTitle: {
-    fontSize: 20,
-    fontFamily: 'Montserrat-Bold',
-    color: Colors.primary,
-    marginBottom: 4,
-  },
-  cropSubtitle: {
-    fontSize: 14,
-    fontFamily: 'OpenSans-Regular',
-    color: Colors.darkGray,
-  },
-  recommendationsContainer: {
-    marginBottom: 16,
-  },
-  recommendationItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  recommendationText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  recommendationTitle: {
-    fontSize: 16,
-    fontFamily: 'OpenSans-Regular',
-    color: Colors.darkGray,
-  },
-  recommendationValue: {
-    fontSize: 18,
-    fontFamily: 'Montserrat-Bold',
-    color: Colors.primary,
-  },
-  irrigationButton: {
-    backgroundColor: Colors.primary,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  irrigationButtonText: {
-    color: Colors.white,
-    fontSize: 16,
+  activeNavText: {
     fontFamily: 'Montserrat-Bold',
   },
 });

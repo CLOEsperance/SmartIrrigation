@@ -49,7 +49,7 @@ export default function RegisterScreen() {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       
       // TODO: Implémenter la logique d'inscription réelle
-      router.replace('/(auth)/initial-config');
+      router.replace('/(public)/language-setup');
     } catch (error) {
       // Gestion des erreurs
     } finally {

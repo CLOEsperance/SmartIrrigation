@@ -1,35 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { View } from 'react-native';
 
 // Gardez l'écran de démarrage visible jusqu'à ce que les ressources soient prêtes
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [fontsLoaded, fontError] = useFonts({
+  const [fontsLoaded] = useFonts({
     'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
     'OpenSans-Regular': require('../assets/fonts/OpenSans-Regular.ttf'),
     'RobotoMono-Regular': require('../assets/fonts/RobotoMono-Regular.ttf'),
   });
 
-  useEffect(() => {
-    if (fontsLoaded || fontError) {
-      // Masquer l'écran de démarrage une fois que les polices sont chargées ou s'il y a une erreur
-      SplashScreen.hideAsync();
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded]);
 
-  // Ne pas rendre tant que les polices ne sont pas chargées
-  if (!fontsLoaded && !fontError) {
+  if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <StatusBar style="auto" />
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#3A7D44',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-Bold',
+          },
+        }}
+      >
         <Stack.Screen
           name="(public)/index"
           options={{
@@ -70,9 +79,15 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name="(auth)/home"
+          name="(public)/language-setup"
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="(auth)/home"
+          options={{
+            title: "Accueil",
           }}
         />
         <Stack.Screen
@@ -92,11 +107,34 @@ export default function RootLayout() {
         <Stack.Screen
           name="(auth)/irrigation"
           options={{
-            title: "Irrigation",
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="(auth)/settings"
+          options={{
+            title: "Paramètres",
+          }}
+        />
+        <Stack.Screen
+          name="(auth)/weather"
+          options={{
+            title: "Météo",
+          }}
+        />
+        <Stack.Screen
+          name="(auth)/conseils-ia"
+          options={{
+            title: "Conseils IA",
+          }}
+        />
+        <Stack.Screen
+          name="(auth)/profile"
+          options={{
+            title: "Profil",
+          }}
+        />
       </Stack>
-    </>
+    </View>
   );
 }

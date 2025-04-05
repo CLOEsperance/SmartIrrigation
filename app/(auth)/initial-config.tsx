@@ -57,46 +57,46 @@ export default function InitialConfigScreen() {
       <View style={styles.overlay}>
         <SafeAreaView style={styles.container}>
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-            <View style={styles.configForm}>
+          <View style={styles.configForm}>
               <Image 
                 source={require('../../assets/images/logo.png')}
                 style={styles.logo}
               />
-              <Text style={styles.title}>Configuration Initiale</Text>
+            <Text style={styles.title}>Configuration Initiale</Text>
               <Text style={styles.subtitle}>Votre localisation</Text>
               
               <Text style={styles.locationText}>
                 {locationEnabled 
                   ? "Votre position a été détectée et affichée sur la carte."
                   : "Activez votre localisation pour voir votre position sur la carte."}
-              </Text>
+                    </Text>
 
               <Text style={styles.locationImportance}>
                 La localisation est nécessaire pour :
                 {'\n'}- Identifier les types de sols disponibles dans votre région
                 {'\n'}- Obtenir des prévisions météo précises
                 {'\n'}- Recevoir des recommandations d'irrigation adaptées
-              </Text>
+                    </Text>
 
               {/* Zone de la carte */}
               <View style={styles.mapContainer}>
-                <Image 
-                  source={require('../../assets/images/map-benin.png')}
-                  style={styles.mapImage}
-                  resizeMode="contain"
-                />
+                  <Image 
+                    source={require('../../assets/images/map-benin.png')} 
+                    style={styles.mapImage}
+                    resizeMode="contain"
+                  />
                 {locationEnabled && (
                   <View style={styles.markerContainer}>
                     <View style={styles.marker}>
                       <Ionicons name="location" size={24} color={Colors.primary} />
                     </View>
-                  </View>
-                )}
-              </View>
+                    </View>
+                  )}
+                </View>
 
               {/* Bouton d'activation de la localisation */}
               {!locationEnabled && (
-                <TouchableOpacity
+                  <TouchableOpacity
                   style={[styles.enableLocationButton, isLoading && styles.enableLocationButtonDisabled]}
                   onPress={handleEnableLocation}
                   disabled={isLoading}
@@ -109,9 +109,9 @@ export default function InitialConfigScreen() {
                       <Text style={styles.enableLocationText}>Activer la localisation</Text>
                     </>
                   )}
-                </TouchableOpacity>
-              )}
-            </View>
+                  </TouchableOpacity>
+            )}
+          </View>
           </ScrollView>
         </SafeAreaView>
       </View>

@@ -24,13 +24,22 @@ type Crop = {
   image: any;
   selected: boolean;
   details?: {
-    soilType: string;
-    area: string;
+  soilType: string;
+  area: string;
     plantingDate: string;
-    compatibleSoils?: string[];
   };
 };
 
+// Définition des types de sols en premier
+const soilTypes = [
+  { id: 'sandy', name: 'Sablonneux', description: 'Sol léger et bien drainé' },
+  { id: 'clay', name: 'Argileux', description: 'Sol lourd et retient bien l\'eau' },
+  { id: 'loamy', name: 'Limoneux', description: 'Sol équilibré, idéal pour la plupart des cultures' },
+  { id: 'ferralitic', name: 'Ferrallitique', description: 'Sol rouge, riche en fer' },
+  { id: 'hydromorphic', name: 'Hydromorphe', description: 'Sol humide, adapté aux rizières' },
+];
+
+// Ensuite, définition des cultures
 const initialCrops: Crop[] = [
   {
     id: 'tomato',
@@ -38,7 +47,9 @@ const initialCrops: Crop[] = [
     image: require('../../assets/images/culture_tomate.jpg.png'),
     selected: false,
     details: {
-      compatibleSoils: ['sandy', 'loamy']
+      soilType: '',
+      area: '',
+      plantingDate: ''
     }
   },
   {
@@ -47,7 +58,9 @@ const initialCrops: Crop[] = [
     image: require('../../assets/images/lettuce.png'),
     selected: false,
     details: {
-      compatibleSoils: ['loamy', 'clay']
+      soilType: '',
+      area: '',
+      plantingDate: ''
     }
   },
   {
@@ -56,17 +69,11 @@ const initialCrops: Crop[] = [
     image: require('../../assets/images/corn.png'),
     selected: false,
     details: {
-      compatibleSoils: ['sandy', 'loamy', 'clay']
+      soilType: '',
+      area: '',
+      plantingDate: ''
     }
   },
-];
-
-const soilTypes = [
-  { id: 'sandy', name: 'Sablonneux', description: 'Sol léger et bien drainé' },
-  { id: 'clay', name: 'Argileux', description: 'Sol lourd et retient bien l\'eau' },
-  { id: 'loamy', name: 'Limoneux', description: 'Sol équilibré, idéal pour la plupart des cultures' },
-  { id: 'ferralitic', name: 'Ferrallitique', description: 'Sol rouge, riche en fer' },
-  { id: 'hydromorphic', name: 'Hydromorphe', description: 'Sol humide, adapté aux rizières' },
 ];
 
 export default function CropConfigScreen() {
@@ -86,12 +93,10 @@ export default function CropConfigScreen() {
   };
 
   const handleSoilToggle = (soilId: string) => {
-    if (selectedCrop?.details?.compatibleSoils) {
-      if (selectedSoils.includes(soilId)) {
-        setSelectedSoils(selectedSoils.filter(id => id !== soilId));
-      } else if (selectedCrop.details.compatibleSoils.includes(soilId)) {
-        setSelectedSoils([...selectedSoils, soilId]);
-      }
+    if (selectedSoils.includes(soilId)) {
+      setSelectedSoils(selectedSoils.filter(id => id !== soilId));
+    } else {
+      setSelectedSoils([...selectedSoils, soilId]);
     }
   };
 
@@ -100,21 +105,12 @@ export default function CropConfigScreen() {
       setShowDatePicker(false);
     }
     
-    if (selectedDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (selectedDate < today) {
-        Alert.alert('Erreur', 'La date de plantation ne peut pas être dans le passé');
-        return;
-      }
-
+    if (selectedDate && selectedCrop) {
       setTempDate(selectedDate);
-      if (selectedCrop) {
-        setSelectedCrop({
-          ...selectedCrop,
-          details: { ...selectedCrop.details, plantingDate: selectedDate.toISOString() }
-        });
-      }
+      setSelectedCrop({
+        ...selectedCrop,
+        details: { ...selectedCrop.details, plantingDate: selectedDate.toISOString() }
+      });
     }
   };
 
@@ -140,17 +136,24 @@ export default function CropConfigScreen() {
     Alert.alert('Succès', 'Culture enregistrée avec succès');
   };
 
-  const handleFinish = () => {
+  const handleSubmit = () => {
+    // Vérifie si au moins une culture est configurée (sélectionnée et avec une surface)
     const configuredCrops = crops.filter(crop => crop.selected && crop.details?.area);
-    if (configuredCrops.length === 0) {
-      Alert.alert('Erreur', 'Veuillez configurer au moins une culture');
-      return;
+    
+    if (configuredCrops.length > 0) {
+      Alert.alert(
+        'Configuration terminée',
+        'Bienvenue sur SmartIrrigation',
+        [
+          {
+            text: 'OK',
+            onPress: () => router.replace('/(auth)/home')
+          }
+        ]
+      );
+    } else {
+      Alert.alert('Erreur', 'Veuillez configurer au moins une culture avant de continuer');
     }
-    Alert.alert(
-      'Configuration terminée',
-      'Vos informations ont été bien enregistrées',
-      [{ text: 'OK', onPress: () => router.push('/(auth)/irrigation') }]
-    );
   };
 
   const formatDate = (dateString: string) => {
@@ -212,11 +215,10 @@ export default function CropConfigScreen() {
                   <Text style={styles.formTitle}>Configuration de {selectedCrop.name}</Text>
                   
                   {/* Types de sols */}
-                  <View style={styles.formGroup}>
+                    <View style={styles.formGroup}>
                     <Text style={styles.label}>Types de sols disponibles</Text>
                     <View style={styles.soilGrid}>
                       {soilTypes.map(soil => {
-                        const isCompatible = selectedCrop.details?.compatibleSoils?.includes(soil.id);
                         const isSelected = selectedSoils.includes(soil.id);
 
                         return (
@@ -224,15 +226,12 @@ export default function CropConfigScreen() {
                             key={soil.id}
                             style={[
                               styles.soilButton,
-                              !isCompatible && styles.soilButtonIncompatible,
                               isSelected && styles.soilButtonSelected,
                             ]}
-                            onPress={() => isCompatible && handleSoilToggle(soil.id)}
-                            disabled={!isCompatible}
+                            onPress={() => handleSoilToggle(soil.id)}
                           >
                             <Text style={[
                               styles.soilButtonText,
-                              !isCompatible && styles.soilButtonTextIncompatible,
                               isSelected && styles.soilButtonTextSelected,
                             ]}>
                               {soil.name}
@@ -240,86 +239,85 @@ export default function CropConfigScreen() {
                           </TouchableOpacity>
                         );
                       })}
+                      </View>
                     </View>
-                  </View>
 
-                  {/* Superficie */}
-                  <View style={styles.formGroup}>
+                    {/* Superficie */}
+                    <View style={styles.formGroup}>
                     <Text style={styles.label}>Superficie cultivée (m²)</Text>
-                    <TextInput
-                      style={styles.input}
+                        <TextInput
+                          style={styles.input}
                       value={surfaceArea}
                       onChangeText={setSurfaceArea}
                       keyboardType="numeric"
-                      placeholder="Entrez la superficie"
-                    />
-                  </View>
+                          placeholder="Entrez la superficie"
+                        />
+                    </View>
 
                   {/* Date de plantation */}
-                  <View style={styles.formGroup}>
-                    <Text style={styles.label}>Date de plantation</Text>
-                    <TouchableOpacity 
-                      style={styles.datePickerButton}
-                      onPress={() => setShowDatePicker(true)}
-                    >
-                      <Text style={styles.dateText}>
-                        {selectedCrop.details?.plantingDate 
-                          ? formatDate(selectedCrop.details.plantingDate)
-                          : 'Sélectionnez une date'}
-                      </Text>
-                      <Ionicons name="calendar" size={20} color={Colors.primary} />
-                    </TouchableOpacity>
-                  </View>
+                    <View style={styles.formGroup}>
+                      <Text style={styles.label}>Date de plantation</Text>
+                      <TouchableOpacity 
+                        style={styles.datePickerButton}
+                        onPress={() => setShowDatePicker(true)}
+                      >
+                        <Text style={styles.dateText}>
+                          {selectedCrop?.details?.plantingDate 
+                            ? formatDate(selectedCrop.details.plantingDate)
+                            : 'Sélectionnez une date'}
+                        </Text>
+                        <Ionicons name="calendar" size={20} color={Colors.primary} />
+                      </TouchableOpacity>
+                    </View>
 
-                  {showDatePicker && (
-                    <DateTimePicker
-                      testID="datePicker"
-                      value={tempDate}
-                      mode="date"
-                      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                      onChange={handleDateChange}
-                      minimumDate={new Date()}
-                    />
-                  )}
+                    {showDatePicker && (
+                      <DateTimePicker
+                        testID="datePicker"
+                        value={tempDate}
+                        mode="date"
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        onChange={handleDateChange}
+                      />
+                    )}
 
-                  <TouchableOpacity
+                    <TouchableOpacity
                     style={styles.saveButton}
                     onPress={handleSaveCrop}
-                  >
+                    >
                     <Text style={styles.saveButtonText}>Enregistrer</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+                    </TouchableOpacity>
+                  </View>
+                )}
 
               {/* Liste des cultures configurées */}
-              <View style={styles.selectedCrops}>
+                <View style={styles.selectedCrops}>
                 <Text style={styles.sectionTitle}>Cultures configurées</Text>
                 {crops.filter(crop => crop.selected && crop.details?.area).map(crop => (
-                  <View key={crop.id} style={styles.selectedCropItem}>
-                    <Image source={crop.image} style={styles.selectedCropImage} />
+                    <View key={crop.id} style={styles.selectedCropItem}>
+                        <Image source={crop.image} style={styles.selectedCropImage} />
                     <View style={styles.selectedCropInfo}>
-                      <Text style={styles.selectedCropName}>{crop.name}</Text>
-                      <Text style={styles.selectedCropDetails}>
+                          <Text style={styles.selectedCropName}>{crop.name}</Text>
+                          <Text style={styles.selectedCropDetails}>
                         Sol: {crop.details?.soilType}
                       </Text>
                       <Text style={styles.selectedCropDetails}>
                         Surface: {crop.details?.area}m²
-                      </Text>
-                      <Text style={styles.selectedCropDetails}>
+                          </Text>
+                          <Text style={styles.selectedCropDetails}>
                         Planté le: {formatDate(crop.details?.plantingDate || '')}
-                      </Text>
+                          </Text>
+                        </View>
                     </View>
-                  </View>
-                ))}
-              </View>
+                  ))}
+                </View>
 
               {/* Bouton Terminer */}
-              <TouchableOpacity
+                <TouchableOpacity
                 style={styles.finishButton}
-                onPress={handleFinish}
+                onPress={handleSubmit}
               >
                 <Text style={styles.finishButtonText}>Terminer la configuration</Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -457,9 +455,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignItems: 'center',
   },
-  soilButtonIncompatible: {
-    opacity: 0.5,
-  },
   soilButtonSelected: {
     backgroundColor: Colors.primary,
   },
@@ -467,9 +462,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Montserrat-Bold',
     color: Colors.darkGray,
-  },
-  soilButtonTextIncompatible: {
-    color: Colors.gray,
   },
   soilButtonTextSelected: {
     color: Colors.white,
